@@ -1,3 +1,5 @@
+import random, copy
+
 # CONSTANT VALUES
 
 DIMENSION = 9
@@ -9,6 +11,9 @@ EMPTY_VALUE = 0
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
+
+def numberOfDuplicates(l):
+    return list(set([x for x in l if l.count(x) > 1]))
 
 # given a .txt file, create the matrix
 def createBoard(file):
@@ -141,7 +146,7 @@ def getLenDomain(domain, cellValue):
             return len(domain)
 
 # gets the list of the length of the domain of each cell 
-def getListMapDoamin(domain, board):
+def getListMapDomain(domain, board):
     map = []
     for row in range(DIMENSION):
         for col in range(DIMENSION):
@@ -150,8 +155,96 @@ def getListMapDoamin(domain, board):
 
 # gets the position of the cell with the minimum length domain 
 def getNextMinimumDomain(domain, board):
-    listMapDomain = getListMapDoamin(domain, board)
+    listMapDomain = getListMapDomain(domain, board)
     minimumFirstList = min(listMapDomain)
     if minimumFirstList == 10 : return None
     index = listMapDomain.index(minimumFirstList)
     return(int(index / DIMENSION), index % DIMENSION)
+
+
+## -- GENERATION OF VALUES --
+
+# the function fills the empty values of the board with values contained in the domain of each box
+# returns the new board and the list of filled positions  
+def generateRandomStates(board):
+    insertedValuesPosition = []
+    for row in range(0,DIMENSION):
+        for col in range(0, DIMENSION):
+            possibleValues = getBoxDomain(row, col, board)
+            for i in range((row//3) * 3, (row//3) * 3 + 3):
+                for j in range((col//3) * 3, (col//3) * 3 + 3):
+                    if board[i][j] == 0:
+                        board[i][j] = possibleValues.pop(random.randint(0, len(possibleValues) - 1))
+                        insertedValuesPosition.append(tuple((i,j)))
+    return board, insertedValuesPosition
+
+# returns a list of boxes: each box is a list of the positions in the box
+def getBoxes():
+    boxlist = []
+    for r in range(0,3):
+        for c in range(0,3):
+            tmp = []
+            for i in range((r%3) * 3, (r%3) * 3 + 3):
+                for j in range((c%3) * 3, (c%3) * 3 + 3):
+                    tmp.append(tuple((i,j)))
+            boxlist.append(tmp)
+    return boxlist
+
+# randomly swap two values of the same box. If there are no values to swap, return False
+def generateNewRandomState(posList, board):
+    if posList == []:
+        return False
+    i = 1
+    boxes = getBoxes()
+    pos = random.randint(0, DIMENSION - i)
+    # print("Numero scelto = ",pos)
+    chosenBox = boxes[pos]
+    # print("Box = ",chosenBox)
+    while len(intersection(posList, chosenBox)) <= 1:
+        # print("Entro nel loop")
+        i += 1
+        boxes.remove(chosenBox)
+        pos = random.randint(0, DIMENSION - i)
+        chosenBox = boxes[pos]
+
+    if (boxes == []):
+        return False
+
+    possiblePositions = intersection(posList, chosenBox)
+    # print("Possibili valori da swappare = ", possiblePositions)
+    a = random.randint(0, len(possiblePositions) - 1)
+    (xA,yA) = possiblePositions[a]
+    # print("Coppia scelta = ", (xA, yA))
+    b = random.randint(0, len(possiblePositions) - 1)
+    while a == b:
+        b = random.randint(0, len(possiblePositions) - 1)
+    # print("Prima posizione = ", possiblePositions[a])
+    # print("Seconda posizione = ", possiblePositions[b])
+    # print("BEFORE")
+    # printBoard(board)
+    xB,yB = possiblePositions[b]
+    elem = board[xA][yA]
+    board[xA][yA] = board[xB][yB]
+    board[xB][yB] = elem
+    # print("AFTER")
+    # printBoard(board)
+    return True
+
+
+# file = f"boards/easy/easy1.txt"
+# board = createBoard(file)
+# # print(getBoxes())
+# # res = []
+# # for row in range(0, DIMENSION):
+# #     for col in range(0, DIMENSION):
+# #         res += generateValuesBox(row, col, board)
+# # print("Posizioni riempite = ",res)
+# # printBoard(board)
+# res = generateRandomStates(board)
+# newBoard = res[0]
+# list = res[1]
+
+# printBoard(newBoard)
+# print(generateNewRandomState(list, newBoard))
+# printBoard(newBoard)
+# # print(swap)

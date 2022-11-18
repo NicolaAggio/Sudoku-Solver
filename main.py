@@ -22,11 +22,11 @@ for item in l:
             cp_results.append((solved,f"{item + str(i)}.txt", execution_time, back))
             i += 1
         else:
-            print("SUDOKU NON RISOLTO")
+            print("SUDOKU NON RISOLTO_BACKPROPAGATION")
 
-header = ['solved','filename', 'execution_time', 'backpropagation']
-with open('./results/cp/results.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(header)
-    for elem in cp_results:
-        writer.writerow(elem)
+# header = ['solved','filename', 'execution_time', 'backpropagation']
+# with open('./results/cp/results.csv', 'w') as f:
+#     writer = csv.writer(f)
+#     writer.writerow(header)
+#     for elem in cp_results:
+#         writer.writerow(elem)
