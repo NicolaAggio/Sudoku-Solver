@@ -190,8 +190,32 @@ def getBoxes():
             boxlist.append(tmp)
     return boxlist
 
-# randomly swap two values of the same box. If there are no values to swap, return False
-def generateNewRandomState(posList, board):
+# returns the list of non-fixed cells in the same box of a given cell
+def getNonFixedCellsInBox(row, col, posList):
+    l = []
+    for i in range((row//3) * 3, (row//3) * 3 + 3):
+        for j in range((col//3) * 3, (col//3) * 3 + 3):
+            if ((i,j) != (row,col) and (i,j) in posList):
+                l.append((i,j))
+    return l
+
+# randomly swap two non-fixed values of the same box. If there are no values to swap, return False
+def generateNewRandomState(board, posList):
+    if posList == []:
+        return False
+    chosenPos = random.randint(0, len(posList) - 1)
+    xA, yA = posList[chosenPos]
+    while len(getNonFixedCellsInBox(xA, yA, posList)) == 0:
+        chosenPos = random.randint(0, len(posList) - 1)
+        xA, yA = posList[chosenPos]
+    neighbors = getNonFixedCellsInBox(xA, yA, posList)
+    xB, yB = neighbors[random.randint(0, len(neighbors) - 1)]
+    elem = board[xA][yA]
+    board[xA][yA] = board[xB][yB]
+    board[xB][yB] = elem
+    return True
+    
+def oldSwap(board, posList):
     if posList == []:
         return False
     i = 1
@@ -209,7 +233,6 @@ def generateNewRandomState(posList, board):
 
     if (boxes == []):
         return False
-
     possiblePositions = intersection(posList, chosenBox)
     # print("Possibili valori da swappare = ", possiblePositions)
     a = random.randint(0, len(possiblePositions) - 1)
@@ -230,21 +253,14 @@ def generateNewRandomState(posList, board):
     # printBoard(board)
     return True
 
-
 # file = f"boards/easy/easy1.txt"
 # board = createBoard(file)
-# # print(getBoxes())
-# # res = []
-# # for row in range(0, DIMENSION):
-# #     for col in range(0, DIMENSION):
-# #         res += generateValuesBox(row, col, board)
-# # print("Posizioni riempite = ",res)
-# # printBoard(board)
+
 # res = generateRandomStates(board)
 # newBoard = res[0]
 # list = res[1]
-
+# # print(getNonFixedCellsInBox(4,7,list))
 # printBoard(newBoard)
-# print(generateNewRandomState(list, newBoard))
-# printBoard(newBoard)
-# # print(swap)
+# print(generateNewRandomState(newBoard, list))
+# # printBoard(newBoard)
+# # # print(swap)
