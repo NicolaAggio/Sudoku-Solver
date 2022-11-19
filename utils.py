@@ -167,16 +167,17 @@ def getNextMinimumDomain(domain, board):
 # the function fills the empty values of the board with values contained in the domain of each box
 # returns the new board and the list of filled positions  
 def generateRandomStates(board):
+    copyB = copy.deepcopy(board)
     insertedValuesPosition = []
     for row in range(0,DIMENSION):
         for col in range(0, DIMENSION):
-            possibleValues = getBoxDomain(row, col, board)
+            possibleValues = getBoxDomain(row, col, copyB)
             for i in range((row//3) * 3, (row//3) * 3 + 3):
                 for j in range((col//3) * 3, (col//3) * 3 + 3):
-                    if board[i][j] == 0:
-                        board[i][j] = possibleValues.pop(random.randint(0, len(possibleValues) - 1))
+                    if copyB[i][j] == 0:
+                        copyB[i][j] = possibleValues.pop(random.randint(0, len(possibleValues) - 1))
                         insertedValuesPosition.append(tuple((i,j)))
-    return board, insertedValuesPosition
+    return copyB, insertedValuesPosition
 
 # returns a list of boxes: each box is a list of the positions in the box
 def getBoxes():
@@ -202,7 +203,8 @@ def getNonFixedCellsInBox(row, col, posList):
 # randomly swap two non-fixed values of the same box. If there are no values to swap, return False
 def generateNewRandomState(board, posList):
     if posList == []:
-        return False
+        return None
+    copyB = copy.deepcopy(board)
     chosenPos = random.randint(0, len(posList) - 1)
     xA, yA = posList[chosenPos]
     while len(getNonFixedCellsInBox(xA, yA, posList)) == 0:
@@ -210,10 +212,10 @@ def generateNewRandomState(board, posList):
         xA, yA = posList[chosenPos]
     neighbors = getNonFixedCellsInBox(xA, yA, posList)
     xB, yB = neighbors[random.randint(0, len(neighbors) - 1)]
-    elem = board[xA][yA]
-    board[xA][yA] = board[xB][yB]
-    board[xB][yB] = elem
-    return True
+    elem = copyB[xA][yA]
+    copyB[xA][yA] = copyB[xB][yB]
+    copyB[xB][yB] = elem
+    return copyB
     
 def oldSwap(board, posList):
     if posList == []:
@@ -253,14 +255,27 @@ def oldSwap(board, posList):
     # printBoard(board)
     return True
 
-# file = f"boards/easy/easy1.txt"
+# file = f"boards/medium/medium2.txt"
 # board = createBoard(file)
 
 # res = generateRandomStates(board)
-# newBoard = res[0]
-# list = res[1]
+# current = res[0]
+# generatedList = res[1]
 # # print(getNonFixedCellsInBox(4,7,list))
-# printBoard(newBoard)
-# print(generateNewRandomState(newBoard, list))
+# printBoard(board)
+# print()
+# # printBoard(current)
+# print(generatedList)
+# for i in range(10000000):
+#     next = generateNewRandomState(current, generatedList)
+#     if next is not None:
+#         # print("Stato successivo")
+#         # printBoard(next)
+#         # print(generatedList)
+#         current = next
+#     else:
+#         print("Stato successivo = NONE")
+# printBoard(current)
+# # print(generateNewRandomState(newBoard, list))
 # # printBoard(newBoard)
 # # # print(swap)
