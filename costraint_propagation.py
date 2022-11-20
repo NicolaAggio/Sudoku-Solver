@@ -1,8 +1,6 @@
 import copy
 from utils import checkCostraints, getAllDomains, getMostConstrainedCell, DIMENSION
 
-# backtracking and costraint propagation with most costrained variable (cell with the fewest possible values)
-
 def solve_cp(board, back):
     # retrieves all the domains of the cells
     domains = getAllDomains(board)

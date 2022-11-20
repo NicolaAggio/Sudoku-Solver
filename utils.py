@@ -162,7 +162,7 @@ def getMostConstrainedCell(domain, board):
     return(int(index / DIMENSION), index % DIMENSION)
 
 
-## -- GENERATION OF VALUES --
+## -- SIMULATED ANNEALING --
 
 # the function fills the empty values of the board with values contained in the domain of each box
 # returns the new board and the list of filled positions  
@@ -216,66 +216,3 @@ def generateNewRandomState(board, posList):
     copyB[xA][yA] = copyB[xB][yB]
     copyB[xB][yB] = elem
     return copyB
-    
-def oldSwap(board, posList):
-    if posList == []:
-        return False
-    i = 1
-    boxes = getBoxes()
-    pos = random.randint(0, DIMENSION - i)
-    # print("Numero scelto = ",pos)
-    chosenBox = boxes[pos]
-    # print("Box = ",chosenBox)
-    while len(intersection(posList, chosenBox)) <= 1:
-        # print("Entro nel loop")
-        i += 1
-        boxes.remove(chosenBox)
-        pos = random.randint(0, DIMENSION - i)
-        chosenBox = boxes[pos]
-
-    if (boxes == []):
-        return False
-    possiblePositions = intersection(posList, chosenBox)
-    # print("Possibili valori da swappare = ", possiblePositions)
-    a = random.randint(0, len(possiblePositions) - 1)
-    (xA,yA) = possiblePositions[a]
-    # print("Coppia scelta = ", (xA, yA))
-    b = random.randint(0, len(possiblePositions) - 1)
-    while a == b:
-        b = random.randint(0, len(possiblePositions) - 1)
-    # print("Prima posizione = ", possiblePositions[a])
-    # print("Seconda posizione = ", possiblePositions[b])
-    # print("BEFORE")
-    # printBoard(board)
-    xB,yB = possiblePositions[b]
-    elem = board[xA][yA]
-    board[xA][yA] = board[xB][yB]
-    board[xB][yB] = elem
-    # print("AFTER")
-    # printBoard(board)
-    return True
-
-# file = f"boards/medium/medium2.txt"
-# board = createBoard(file)
-
-# res = generateRandomStates(board)
-# current = res[0]
-# generatedList = res[1]
-# # print(getNonFixedCellsInBox(4,7,list))
-# printBoard(board)
-# print()
-# # printBoard(current)
-# print(generatedList)
-# for i in range(10000000):
-#     next = generateNewRandomState(current, generatedList)
-#     if next is not None:
-#         # print("Stato successivo")
-#         # printBoard(next)
-#         # print(generatedList)
-#         current = next
-#     else:
-#         print("Stato successivo = NONE")
-# printBoard(current)
-# # print(generateNewRandomState(newBoard, list))
-# # printBoard(newBoard)
-# # # print(swap)

@@ -1,8 +1,5 @@
-from utils import DIMENSION, createBoard, generateRandomStates, printBoard, numberOfDuplicates, generateNewRandomState, checkSolution
+from utils import DIMENSION, generateRandomStates, numberOfDuplicates, generateNewRandomState
 import statistics, copy, random, math
-# import sys, threading
-# sys.setrecursionlimit(100000000)
-# threading.stack_size(2**27)
 
 def costFunctionRow(board):
     cost = 0
@@ -34,14 +31,6 @@ def initialTemp(board, posList):
             listOfDifferences.append(costFunction(copyB))
     return statistics.pstdev(listOfDifferences)
 
-def numberOfIterations(board):
-    count = 0
-    for row in range(0, DIMENSION):
-        for col in range(0, DIMENSION):
-            if board[row][col] == 0:
-                count += 1
-    return count^2
-
 def solve_sa(board):
     # cooling rate
     coolingRate = 0.9949
@@ -62,7 +51,7 @@ def solve_sa(board):
     iter = 0
     nReheat = 1
 
-    # repeat untile either we reach 1,000,000 iterations, or 
+    # repeat until either we reach 1,000,000 iterations, or 
     # the temperature reaches 0 or the score reaches 0 (i.e. a solution is found)
     while iter < 1000000 and temp != 0.00 and score != 0: 
 
@@ -90,50 +79,4 @@ def solve_sa(board):
             temp *= coolingRate
         else:
             return None
-    return current, iter, nReheat-1
-
-def rec_solve_sa(current, temp, scoreCurrent, positionsList, n_iter):
-    coolingRate = 0.9949
-
-    if scoreCurrent == 0  or temp == 0.0 : # or n_iter == 1000000 or temp == 0.0:
-        # solved
-        print("Return")
-        return current, n_iter
-
-    # if not solved, i have to generate another random state
-    next = generateNewRandomState(current, positionsList)
-    if next is not None:
-        # random swap is done
-        scoreNext = costFunction(next)
-        delta = scoreNext - scoreCurrent
-        if delta < 0 or random.random() < math.exp((-delta)/temp):
-            # next state is accepted
-            return rec_solve_sa(next, temp*coolingRate, scoreNext, positionsList, n_iter + 1)
-        else:
-            # next state is not accepted
-            return rec_solve_sa(current, temp*coolingRate, scoreCurrent, positionsList, n_iter + 1)
-    else:
-        return current, n_iter
-    
-# file = f"boards/normal/normal1.txt"
-# board = createBoard(file)
-# # res = generateRandomStates(board)
-# # current = res[0]
-# # list = res[1]
-# # initial_temp = initialTemp(current, list)
-# # initial_score = costFunction(current)
-# # print(generateNewRandomState(board, list))
-# # printBoard(board)
-# # print(initialTemp(current, list))
-# solution = solve_sa(board)
-# if solution is not None:
-#     solvedBoard = solution[0]
-#     iterations = solution[1]
-#     if checkSolution(solvedBoard):
-#         printBoard(solvedBoard)
-#         print("Sudoku risolto")
-#         print("Numero di iterazioni = ", iterations)
-#     else:
-#         print("Sudoku non risolto!")
-# else:
-#     print("Sudoku non risolto!")
+    return current, iter, nReheat-1  
