@@ -71,19 +71,20 @@ for item in l:
         if solution is not None:
             solvedBoard = solution[0]
             iterations = solution[1]
+            numberReheat = solution[2]
             if checkSolution(solvedBoard):
                 writeBoard("annealing", f"{item + str(i)}.txt", solvedBoard)
-                sa_results.append((True,f"{item + str(i)}.txt", execution_time, iterations))              
+                sa_results.append((True,f"{item + str(i)}.txt", execution_time, iterations, numberReheat))              
             else:
-                sa_results.append((False,f"{item + str(i)}.txt", execution_time, iterations))
+                sa_results.append((False,f"{item + str(i)}.txt", execution_time, iterations, numberReheat))
                 print("Sudoku non risolto!")
         else:
-            sa_results.append((False,f"{item + str(i)}.txt", execution_time, iterations))
+            sa_results.append((False,f"{item + str(i)}.txt", execution_time, iterations, numberReheat))
             print("Sudoku non risolto!") 
 
         i += 1
 
-header = ['solved','filename', 'execution_time', 'number_of_iterations']
+header = ['solved','filename', 'execution_time', 'number_of_iterations', 'number_of_reheats']
 with open('./results/annealing/results.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow(header)
