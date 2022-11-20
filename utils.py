@@ -154,7 +154,7 @@ def getListMapDomain(domain, board):
     return map
 
 # gets the position of the cell with the minimum length domain 
-def getNextMinimumDomain(domain, board):
+def getMostConstrainedCell(domain, board):
     listMapDomain = getListMapDomain(domain, board)
     minimumFirstList = min(listMapDomain)
     if minimumFirstList == 10 : return None

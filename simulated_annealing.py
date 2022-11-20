@@ -62,7 +62,8 @@ def solve_sa(board):
     iter = 0
     nReheat = 1
 
-    # repeat untile either we reach 1,000,000 iterations, or the temperature reaches 0 or the score reaches 0 (i.e. a solution is found)
+    # repeat untile either we reach 1,000,000 iterations, or 
+    # the temperature reaches 0 or the score reaches 0 (i.e. a solution is found)
     while iter < 1000000 and temp != 0.00 and score != 0: 
 
         # reheat after 10,000 iterations
